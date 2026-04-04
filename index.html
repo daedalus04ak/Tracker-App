@@ -2727,6 +2727,28 @@
         })();
 
     </script>
+
+    <script>
+    // Force-clear ALL old caches and re-register service worker
+    if ('serviceWorker' in navigator) {
+        // Step 1: Unregister ALL existing service workers
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(reg => reg.unregister());
+        });
+        // Step 2: Nuke ALL caches
+        if ('caches' in window) {
+            caches.keys().then(names => {
+                names.forEach(name => caches.delete(name));
+            });
+        }
+        // Step 3: Re-register fresh service worker after a short delay
+        setTimeout(() => {
+            navigator.serviceWorker.register('sw.js?v=4').then(() => {
+                console.log('Fresh SW registered');
+            });
+        }, 1000);
+    }
+    </script>
 </body>
 
 </html>
